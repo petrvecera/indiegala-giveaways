@@ -20,13 +20,13 @@ https://www.indiegala.com/giveaways/detail/xxx and the scipt is enabled it's goi
 giveway imideatelly. 
 
 ## Warning
-**Use this script at your own risk. Might violate IndieGala TOS.**
-Also don't be pathetic and don't abuse giveaways. Enjoy this IndieGala feature and just use the script to save your time.
+**Use this script at your own risk. Might violate IndieGala TOS.**  
+Also don't be pathetic and don't abuse giveaways. Enjoy this IndieGala feature. Use the script just to save your time.
 
 ### Authors
 
-The script is mostly based on https://greasyfork.org/en/scripts/21412-autojoin-indiegala-giveaways-improved
-Which was created by George Dorn (@GDorn), Sergio Susa (http://sergiosusa.com)
+The script is mostly based on https://greasyfork.org/en/scripts/21412-autojoin-indiegala-giveaways-improved  
+Which was created by George Dorn (@GDorn) and Sergio Susa (http://sergiosusa.com)
 
 Added fixes to work with the latest version of the IndieGala website as per 18/Feb/2017 and few other tweeks.
 
