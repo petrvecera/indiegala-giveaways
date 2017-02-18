@@ -1,10 +1,12 @@
 // ==UserScript==
 // @name         AutoJoin IndieGala Giveaways (improved)
-// @version      0.4
+// @version      0.4.1
 // @date         18/Feb/2017
 // @description  AutoJoin for IndieGala Giveaways!
 // @author       George Dorn (@GDorn), Sergio Susa (http://sergiosusa.com) and pagep (http://pagep.net)
 // @homepage     https://github.com/petrvecera/indiegala-giveaways
+// @updateURL    https://raw.githubusercontent.com/petrvecera/indiegala-giveaways/master/script.js
+// @downloadURL  https://raw.githubusercontent.com/petrvecera/indiegala-giveaways/master/script.js
 // @match        https://www.indiegala.com/giveaways*
 // @grant        none
 // ==/UserScript==
