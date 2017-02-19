@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         AutoJoin IndieGala Giveaways (improved)
-// @version      0.4.1
+// @version      0.4.5
 // @date         18/Feb/2017
 // @description  AutoJoin for IndieGala Giveaways!
 // @author       George Dorn (@GDorn), Sergio Susa (http://sergiosusa.com) and pagep (http://pagep.net)
@@ -15,7 +15,7 @@ var reloading = 3 * 60 * 1000; // 3 minutes; delay encountered when out of point
 var trying = 40 * 1000; // 10 seconds; delay before loading next page
 var min_coins = 5; // number of points to save
 var coins_per_page = 10; // number of extra points to save per page, to avoid wasting points on contests hours in the future; cycles to page one after exceeding
-var timeBetweenClicks = 4 * 1000; // 2 seconds; delay between clicking on ticket stubs
+var timeBetweenClicks = 5 * 1000; // 2 seconds; delay between clicking on ticket stubs
 var max_page = 20; // maximum page number; cycles to page 1 after this or stops script
 var start_delay = 5 * 1000; // wait this long on page load, for 'match_games_in_steam_library' to finish.
 var max_level = 0; // maximum contest level to try to enter; set to higher if you are a higher level.
@@ -54,6 +54,9 @@ var autoEnter = function () {
     var contests = $('div.tickets-col');
 
     console.log("Got ", contests.length, " contests: ", contests);
+
+    var global_wait_counter = 0;
+    var going_to_enter = 0;
 
     // iterate through contests on the page, scheduling clicks on stubs if they meet our criteria
     for (var i = 0; i < contests.length; i++) {
@@ -97,16 +100,18 @@ var autoEnter = function () {
         var delay = randomize(timeBetweenClicks);
 
         var newUrl = "https://www.indiegala.com" + stub.querySelector("a.giv-coupon-link").getAttribute('href');
-        window.open(newUrl, '_blank');
+        var give_id = newUrl.replace ( /[^0-9]/g, '' );
 
+        global_wait_counter += delay;
+        enter_giveaway(name, give_id, price, global_wait_counter);
+        going_to_enter++;
 
-        console.log("Opening new window on: ", name, stub);
-        console.log("New url: ", newUrl);
+        coins -= price; // deduct cost of contest, TODO: This decreases the coins even when the enter fails. Might miss some giveaway.
+
         next_page_delay += delay; // add the delay to the next page delay so we don't load next page before the click happens
-        coins -= price; // deduct cost of contest
     }
 
-    console.log("###### Done with this page, moving on to next. ######");
+    console.log("###### Done with this page, going to enter " + going_to_enter + " GW ######");
 
     var next_page = calculateNextPage();
 
@@ -143,33 +148,47 @@ var autoEnter = function () {
 };
 
 $(document).ready(function () {
-    var pageUrl = window.location.href;
-    if (pageUrl.indexOf("https://www.indiegala.com/giveaways/detail/") > -1) {
-        console.log("I am on detail page, going to enter giveaway");
-        var ticket = document.querySelector("aside.giv-coupon.relative.animated-coupon ");
-        if (ticket) {
-            ticket.click();
-            console.log("Giveaway probably entered...");
-        }
-        setTimeout(function () {
-            window.close();
-        }, 1200);
-    } else {
-        console.log("I am on the main page, will start autojoin script");
-        setTimeout(autoEnter, start_delay);
-    }
+
+    console.log("I am on the main page, will start autojoin script");
+    setTimeout(autoEnter, start_delay);
+
 });
 
 /***********************************************************
  *  Utility Functions
  **********************************************************/
 
+function enter_giveaway (name, give_id, price, timeout){
+
+    setTimeout(function(){
+
+        console.log("Entering ", name, " with ID ", give_id, " for: ", price);
+
+        $.ajax({
+            url: "https://www.indiegala.com/giveaways/new_entry",
+            type: "POST",
+            dataType: "json",
+            data: JSON.stringify({giv_id: give_id, ticket_price: "" + price}),
+            contentType: "application/json"
+        })
+            .done(function(data) {
+                console.log("Giveaway ", name, " entered for price", price);
+                console.log(data);
+            })
+            .fail(function() {
+                console.log("Error entering giveaway", name);
+                console.log(data);
+            });
+
+    }, timeout);
+}
+
 function randomize(number) {
     // returns a random number somewhere between 3/4 and 5/4 of the given value.
     // maybe helps bust bot detection.
     var base = Math.floor(number * 0.75);
     var max_add = Math.floor(number * 0.5);
-    return result = base + Math.floor(Math.random() * max_add);
+    return base + Math.floor(Math.random() * max_add);
 }
 
 function removeAlreadyHave() {
