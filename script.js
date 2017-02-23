@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         AutoJoin IndieGala Giveaways (improved)
-// @version      0.4.5
+// @version      0.4.6
 // @date         18/Feb/2017
 // @description  AutoJoin for IndieGala Giveaways!
 // @author       George Dorn (@GDorn), Sergio Susa (http://sergiosusa.com) and pagep (http://pagep.net)
@@ -15,8 +15,8 @@ var reloading = 3 * 60 * 1000; // 3 minutes; delay encountered when out of point
 var trying = 40 * 1000; // 10 seconds; delay before loading next page
 var min_coins = 5; // number of points to save
 var coins_per_page = 10; // number of extra points to save per page, to avoid wasting points on contests hours in the future; cycles to page one after exceeding
-var timeBetweenClicks = 5 * 1000; // 2 seconds; delay between clicking on ticket stubs
-var max_page = 20; // maximum page number; cycles to page 1 after this or stops script
+var timeBetweenClicks = 4 * 1000; // 2 seconds; delay between clicking on ticket stubs
+var max_page = 40; // maximum page number; cycles to page 1 after this or stops script
 var start_delay = 5 * 1000; // wait this long on page load, for 'match_games_in_steam_library' to finish.
 var max_level = 0; // maximum contest level to try to enter; set to higher if you are a higher level.
 var max_participants = 800; // skip contests with more participants than this
