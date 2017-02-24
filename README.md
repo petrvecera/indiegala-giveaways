@@ -29,3 +29,11 @@ Which was created by George Dorn (@GDorn) and Sergio Susa (http://sergiosusa.com
 Added fixes to work with the latest version of the IndieGala website as per 19/Feb/2017 and few other tweaks.
 
 Any additional edits and improvements are welcomed.
+
+### Changelog
+
+**0.4.7**
+- Added lifetime counter of entered give-aways. Prints the info at the start of the script.
+
+**0.4.6**
+- Tweaked the default configs.

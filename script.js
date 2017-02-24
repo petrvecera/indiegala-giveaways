@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         AutoJoin IndieGala Giveaways (improved)
-// @version      0.4.6
-// @date         18/Feb/2017
+// @version      0.4.7
+// @date         24/Feb/2017
 // @description  AutoJoin for IndieGala Giveaways!
 // @author       George Dorn (@GDorn), Sergio Susa (http://sergiosusa.com) and pagep (http://pagep.net)
 // @homepage     https://github.com/petrvecera/indiegala-giveaways
@@ -31,6 +31,7 @@ var autoEnter = function () {
     'use strict';
 
     console.log("Starting auto-entry.");
+    console.log("In total (life-time) entered: " +  getEntryCount() + " giveways");
 
     if (skip_already_owned) {
         removeAlreadyHave();
@@ -158,6 +159,24 @@ $(document).ready(function () {
  *  Utility Functions
  **********************************************************/
 
+function addEntryCount(number){
+    if(!number) number = 1;
+
+    if (localStorage.clickcount) {
+        localStorage.clickcount = Number(localStorage.clickcount) + number;
+    } else {
+        localStorage.clickcount = 1;
+    }
+}
+
+function getEntryCount(){
+    if (localStorage.clickcount){
+        return Number(localStorage.clickcount);
+    }
+
+    return 0;
+}
+
 function enter_giveaway (name, give_id, price, timeout){
 
     setTimeout(function(){
@@ -174,6 +193,7 @@ function enter_giveaway (name, give_id, price, timeout){
             .done(function(data) {
                 console.log("Giveaway ", name, " entered for price", price);
                 console.log(data);
+                addEntryCount();
             })
             .fail(function() {
                 console.log("Error entering giveaway", name);
