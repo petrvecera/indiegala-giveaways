@@ -13,8 +13,9 @@ User script to auto-join giveaways on indiegala.com
 - Disable the script once you are finished
 
 ### What it does / how it works?
-Scrcipt detects that is at https://www.indiegala.com/giveaways/1/expiry/asc
-Detects all the giveaways, assess the settings - if wants to join the giveaway it sends the request to enter.
+Script detects that is at https://www.indiegala.com/giveaways/1/expiry/asc
+Detects all the giveaways, assess the settings - if wants to join the giveaway it sends the request to enter.  
+Script can automatically detect DLC and skip them.  
 Open browser dev tools to see details (press `F12`) about current status.
 
 ## Warning
@@ -23,14 +24,23 @@ Also don't be pathetic and don't abuse giveaways. Enjoy this IndieGala feature. 
 
 ### Authors
 
-The script is mostly based on https://greasyfork.org/en/scripts/21412-autojoin-indiegala-giveaways-improved  
+The script is based on https://greasyfork.org/en/scripts/21412-autojoin-indiegala-giveaways-improved  
 Which was created by George Dorn (@GDorn) and Sergio Susa (http://sergiosusa.com)
 
-Added fixes to work with the latest version of the IndieGala website as per 19/Feb/2017 and few other tweaks.
+Modifications:
+
+- Fixed the script to work with latest IndieGala website.
+- Added SteamAPI checker.
+- Additional tweaks and improvements. 
 
 Any additional edits and improvements are welcomed.
 
 ### Changelog
+
+**0.5.0**
+- Added checking for the DLC using Steam API, default value  is `var skipDlc = true;`
+- Added option for max price, default value is `var max_price = 50;`
+- Fixed bug when script was executed when browsing single page
 
 **0.4.7**
 - Added lifetime counter of entered give-aways. Prints the info at the start of the script.

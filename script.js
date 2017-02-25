@@ -1,37 +1,41 @@
 // ==UserScript==
 // @name         AutoJoin IndieGala Giveaways (improved)
-// @version      0.4.7
-// @date         24/Feb/2017
+// @version      0.5.0
+// @date         25/Feb/2017
 // @description  AutoJoin for IndieGala Giveaways!
 // @author       George Dorn (@GDorn), Sergio Susa (http://sergiosusa.com) and pagep (http://pagep.net)
 // @homepage     https://github.com/petrvecera/indiegala-giveaways
 // @updateURL    https://raw.githubusercontent.com/petrvecera/indiegala-giveaways/master/script.js
 // @downloadURL  https://raw.githubusercontent.com/petrvecera/indiegala-giveaways/master/script.js
 // @match        https://www.indiegala.com/giveaways*
+// @exclude      https://www.indiegala.com/giveaways/detail/*
 // @grant        none
 // ==/UserScript==
 
 var reloading = 3 * 60 * 1000; // 3 minutes; delay encountered when out of points with enabled inifinte run
-var trying = 40 * 1000; // 10 seconds; delay before loading next page
+var trying = 30 * 1000; // 10 seconds; delay before loading next page
 var min_coins = 5; // number of points to save
 var coins_per_page = 10; // number of extra points to save per page, to avoid wasting points on contests hours in the future; cycles to page one after exceeding
-var timeBetweenClicks = 4 * 1000; // 2 seconds; delay between clicking on ticket stubs
+var timeBetweenClicks = 3 * 1000; // 2 seconds; delay between clicking on ticket stubs
 var max_page = 40; // maximum page number; cycles to page 1 after this or stops script
 var start_delay = 5 * 1000; // wait this long on page load, for 'match_games_in_steam_library' to finish.
 var max_level = 0; // maximum contest level to try to enter; set to higher if you are a higher level.
 var max_participants = 800; // skip contests with more participants than this
+var max_price = 50; // max price to enter
 var skip_already_owned = true; // skip contests for games you already own (according to indiegala)
 var infinite_run = false; // will not stop when you run out of coins or when you reach max page
+var skipDlc = true; //skip DLC, this will make request to steam API
 
 if (!skip_already_owned) {
     start_delay = 50; //if we don't care about winning games we own, we can run a little faster
 }
 
+
 var autoEnter = function () {
     'use strict';
 
     console.log("Starting auto-entry.");
-    console.log("In total (life-time) entered: " +  getEntryCount() + " giveways");
+    console.log("In total (life-time) entered: " + getEntryCount() + " giveways");
 
     if (skip_already_owned) {
         removeAlreadyHave();
@@ -87,6 +91,11 @@ var autoEnter = function () {
             continue;
         }
 
+        if (price > max_price) {
+            console.log("Skipping ", name, " because price (", price, ") is higher than max price (", max_price, ")");
+            continue;
+        }
+
         if (level > max_level) {
             console.log("Skipping ", name, " because required level (", level, ") is greater than max_level,", max_level);
             continue;
@@ -99,20 +108,70 @@ var autoEnter = function () {
 
         // if we're here, all checks passed, go ahead and click on it.
         var delay = randomize(timeBetweenClicks);
+        global_wait_counter += delay;
 
         var newUrl = "https://www.indiegala.com" + stub.querySelector("a.giv-coupon-link").getAttribute('href');
-        var give_id = newUrl.replace ( /[^0-9]/g, '' );
 
-        global_wait_counter += delay;
-        enter_giveaway(name, give_id, price, global_wait_counter);
+        // get the indie gala blah
+
+        if (skipDlc) {
+
+
+            getSteamAppId(newUrl, price, name, global_wait_counter, function (indieUrl, price, name, currentWait, steamId) {
+                if (!indieUrl || !steamId) {
+                    console.log("ERROR: SteamID not defined");
+                }
+
+                var give_id = indieUrl.replace(/[^0-9]/g, '');
+
+                var finalSteamUrl = "https://store.steampowered.com/api/appdetails?appids=" + steamId;
+
+                $.ajax({
+                    url: "https://json2jsonp.com/?url=" + encodeURIComponent(finalSteamUrl) + "",
+                    dataType: "jsonp",
+                    success: function (json) {
+                        var steamData = json[Object.keys(json)[0]].data;
+                        var type = steamData.type;
+
+                        if (name != steamData.name) {
+                            console.log("ERROR: Incorrect API request");
+                            console.log("ERROR: STEAM API: Game|", name, "| != Steam Name:|", steamData.name, "|");
+                            console.log("ERROR: indie url", indieUrl);
+                            console.log("ERROR: steamID:", steamId);
+                        }
+
+                        if (type != "dlc") {
+                            console.log("STEAM API: Game|", name, "| Steam Name:|", steamData.name, "|is type ", type, "execute enter with wait: ", currentWait);
+                            enter_giveaway(name, give_id, price, currentWait);
+
+                            coins -= price; // deduct cost of contest, TODO: This decreases the coins even when the enter fails. Might miss some giveaway.
+                        } else {
+                            console.log("STEAM API: Game|", name, "| Steam Name:|", steamData.name, "|is type:", type);
+                        }
+
+                    },
+                    error: function (event, jqxhr, error) {
+                        console.log("ERROR: Executing the SteamAPI request", error);
+                        console.log(finalSteamUrl, name, indieUrl);
+                    }
+                });
+
+            });
+
+        } else {
+            var give_id = newUrl.replace(/[^0-9]/g, '');
+
+            enter_giveaway(name, give_id, price, global_wait_counter);
+
+            coins -= price; // deduct cost of contest, TODO: This decreases the coins even when the enter fails. Might miss some giveaway.
+
+        }
         going_to_enter++;
-
-        coins -= price; // deduct cost of contest, TODO: This decreases the coins even when the enter fails. Might miss some giveaway.
 
         next_page_delay += delay; // add the delay to the next page delay so we don't load next page before the click happens
     }
 
-    console.log("###### Done with this page, going to enter " + going_to_enter + " GW ######");
+    console.log("###### First page analysis complete, will try to enter " + going_to_enter + " GW ######");
 
     var next_page = calculateNextPage();
 
@@ -139,6 +198,7 @@ var autoEnter = function () {
     next_page_delay = randomize(next_page_delay);
 
     console.log("Going to load page ", next_page, " in about ", next_page_delay, 'ms');
+    if (skipDlc) console.log("Starting Steam API analysis for DLC");
 
     setTimeout(function () {
 
@@ -159,8 +219,24 @@ $(document).ready(function () {
  *  Utility Functions
  **********************************************************/
 
-function addEntryCount(number){
-    if(!number) number = 1;
+function getSteamAppId(indieUrl, price, name, currentWait, callback) {
+    $.ajax({
+        url: indieUrl,
+        type: "GET",
+    })
+        .done(function (data) {
+            var steamId = data.substr(data.search("http://store.steampowered.com/app/") + 34, 20).replace(/[^0-9]/g, '');
+            callback(indieUrl, price, name, currentWait, steamId);
+        })
+        .fail(function () {
+            console.log("Error getting detailed page for giveawy ");
+            callback();
+        });
+}
+
+
+function addEntryCount(number) {
+    if (!number) number = 1;
 
     if (localStorage.clickcount) {
         localStorage.clickcount = Number(localStorage.clickcount) + number;
@@ -169,17 +245,17 @@ function addEntryCount(number){
     }
 }
 
-function getEntryCount(){
-    if (localStorage.clickcount){
+function getEntryCount() {
+    if (localStorage.clickcount) {
         return Number(localStorage.clickcount);
     }
 
     return 0;
 }
 
-function enter_giveaway (name, give_id, price, timeout){
+function enter_giveaway(name, give_id, price, timeout) {
 
-    setTimeout(function(){
+    setTimeout(function () {
 
         console.log("Entering ", name, " with ID ", give_id, " for: ", price);
 
@@ -190,12 +266,12 @@ function enter_giveaway (name, give_id, price, timeout){
             data: JSON.stringify({giv_id: give_id, ticket_price: "" + price}),
             contentType: "application/json"
         })
-            .done(function(data) {
+            .done(function (data) {
                 console.log("Giveaway ", name, " entered for price", price);
                 console.log(data);
                 addEntryCount();
             })
-            .fail(function() {
+            .fail(function () {
                 console.log("Error entering giveaway", name);
                 console.log(data);
             });
