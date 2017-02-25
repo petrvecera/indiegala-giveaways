@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         AutoJoin IndieGala Giveaways (improved)
-// @version      0.5.1
+// @version      0.5.2
 // @date         25/Feb/2017
 // @description  AutoJoin for IndieGala Giveaways!
 // @author       George Dorn (@GDorn), Sergio Susa (http://sergiosusa.com) and pagep (http://pagep.net)
@@ -204,7 +204,7 @@ var autoEnter = function () {
 
     setTimeout(function () {
 
-        window.location = window.location.href.replace(/[0-9]/g, next_page);
+        window.location = window.location.href.replace( /[0-9]/, '#').replace(/[0-9]/g, '').replace("#", next_page);
 
     }, next_page_delay);
 

@@ -7,15 +7,17 @@ User script to auto-join giveaways on indiegala.com
 
 ## Usage
 
-- Edit the settings at the start of the script based on your liking
+- Edit the settings at the start of the script based on your liking. (There is quite a lot of settings you can use)
 - Enable the script in the plugin settings
-- Visit the page https://www.indiegala.com/giveaways/1/expiry/asc
-- Disable the script once you are finished
+- Visit the page https://www.indiegala.com/giveaways/1/expiry/asc (or any equivalent /participants/desc etc)
+- Disable the script once you are finished (or not, depens on you)
 
 ### What it does / how it works?
-Script detects that is at https://www.indiegala.com/giveaways/1/expiry/asc
+Script detects that is at https://www.indiegala.com/giveaways/1/expiry/asc  
 Detects all the giveaways, assess the settings - if wants to join the giveaway it sends the request to enter.  
-Script can automatically detect DLC and skip them.  
+Moves to higher page https://www.indiegala.com/giveaways/2/expiry/asc etc  
+Script can automatically detect DLC using SteamAPI and skip them.  
+  
 Open browser dev tools to see details (press `F12`) about current status.
 
 ## Warning
@@ -36,6 +38,9 @@ Modifications:
 Any additional edits and improvements are welcomed.
 
 ### Changelog
+
+**0.5.2**
+- Fix the url change on multi digits pages.
 
 **0.5.1**
 - Will respect your URL settings, you can use `/participants/asc` or `/expiry/asc` etc.
