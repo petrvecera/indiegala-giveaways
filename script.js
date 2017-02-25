@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         AutoJoin IndieGala Giveaways (improved)
-// @version      0.5.0
+// @version      0.5.1
 // @date         25/Feb/2017
 // @description  AutoJoin for IndieGala Giveaways!
 // @author       George Dorn (@GDorn), Sergio Susa (http://sergiosusa.com) and pagep (http://pagep.net)
@@ -9,6 +9,7 @@
 // @downloadURL  https://raw.githubusercontent.com/petrvecera/indiegala-giveaways/master/script.js
 // @match        https://www.indiegala.com/giveaways*
 // @exclude      https://www.indiegala.com/giveaways/detail/*
+// @exclude      https://www.indiegala.com/giveaways/
 // @grant        none
 // ==/UserScript==
 
@@ -21,7 +22,7 @@ var max_page = 40; // maximum page number; cycles to page 1 after this or stops 
 var start_delay = 5 * 1000; // wait this long on page load, for 'match_games_in_steam_library' to finish.
 var max_level = 0; // maximum contest level to try to enter; set to higher if you are a higher level.
 var max_participants = 800; // skip contests with more participants than this
-var max_price = 50; // max price to enter
+var max_price = 30; // max price to enter
 var skip_already_owned = true; // skip contests for games you already own (according to indiegala)
 var infinite_run = false; // will not stop when you run out of coins or when you reach max page
 var skipDlc = true; //skip DLC, this will make request to steam API
@@ -138,6 +139,7 @@ var autoEnter = function () {
                             console.log("ERROR: STEAM API: Game|", name, "| != Steam Name:|", steamData.name, "|");
                             console.log("ERROR: indie url", indieUrl);
                             console.log("ERROR: steamID:", steamId);
+                            return;
                         }
 
                         if (type != "dlc") {
@@ -202,7 +204,7 @@ var autoEnter = function () {
 
     setTimeout(function () {
 
-        window.location = "https://www.indiegala.com/giveaways/[NUM_PAGE]/expiry/asc".replace("[NUM_PAGE]", next_page);
+        window.location = window.location.href.replace(/[0-9]/g, next_page);
 
     }, next_page_delay);
 
@@ -313,7 +315,7 @@ function get_participants(contest) {
 }
 
 function calculateNextPage() {
-    var page = window.location.href.replace("https://www.indiegala.com/giveaways/", "").replace("/expiry/asc", "");
+    var page = window.location.href.replace(/^\D+/g, '');
     return parseInt(page) + 1;
 }
 

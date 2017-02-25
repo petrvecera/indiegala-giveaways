@@ -37,9 +37,13 @@ Any additional edits and improvements are welcomed.
 
 ### Changelog
 
+**0.5.1**
+- Will respect your URL settings, you can use `/participants/asc` or `/expiry/asc` etc.
+- Will not be started when you open `https://www.indiegala.com/giveaways/` you have to set some settings.
+
 **0.5.0**
 - Added checking for the DLC using Steam API, default value  is `var skipDlc = true;`
-- Added option for max price, default value is `var max_price = 50;`
+- Added option for max price, default value is `var max_price = 30;`
 - Fixed bug when script was executed when browsing single page
 
 **0.4.7**
