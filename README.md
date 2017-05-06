@@ -39,6 +39,9 @@ Any additional edits and improvements are welcomed.
 
 ### Changelog
 
+**0.5.3**
+- Fix the Indie coins selector for the new design
+
 **0.5.2**
 - Fix the url change on multi digits pages.
 
