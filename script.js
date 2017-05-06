@@ -1,13 +1,13 @@
 // ==UserScript==
 // @name         AutoJoin IndieGala Giveaways (improved)
-// @version      0.5.2
-// @date         25/Feb/2017
+// @version      0.5.3
+// @date         06/May/2017
 // @description  AutoJoin for IndieGala Giveaways!
 // @author       George Dorn (@GDorn), Sergio Susa (http://sergiosusa.com) and pagep (http://pagep.net)
 // @homepage     https://github.com/petrvecera/indiegala-giveaways
 // @updateURL    https://raw.githubusercontent.com/petrvecera/indiegala-giveaways/master/script.js
 // @downloadURL  https://raw.githubusercontent.com/petrvecera/indiegala-giveaways/master/script.js
-// @match        https://www.indiegala.com/giveaways*
+// @match        https://www.indiegala.com/giveaways/*
 // @exclude      https://www.indiegala.com/giveaways/detail/*
 // @exclude      https://www.indiegala.com/giveaways/
 // @grant        none
@@ -42,7 +42,7 @@ var autoEnter = function () {
         removeAlreadyHave();
     }
 
-    var coins = parseInt($("#silver-coins-menu").html());
+    var coins = parseInt(document.querySelector(".account-galamoney").innerHTML.match(/\d+/)[0]);
     console.log("Have this many coins: ", coins);
     if (coins < min_coins) {
         if (!infinite_run) {
