@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name         AutoJoin IndieGala Giveaways (improved)
-// @version      0.5.3
-// @date         06/May/2017
+// @version      0.5.4
+// @date         10/Jun/2017
 // @description  AutoJoin for IndieGala Giveaways!
-// @author       George Dorn (@GDorn), Sergio Susa (http://sergiosusa.com) and pagep (http://pagep.net)
+// @author       pagep (http://pagep.net) based on work from George Dorn (@GDorn), Sergio Susa (http://sergiosusa.com)
 // @homepage     https://github.com/petrvecera/indiegala-giveaways
 // @updateURL    https://raw.githubusercontent.com/petrvecera/indiegala-giveaways/master/script.js
 // @downloadURL  https://raw.githubusercontent.com/petrvecera/indiegala-giveaways/master/script.js
@@ -221,12 +221,13 @@ $(document).ready(function () {
  *  Utility Functions
  **********************************************************/
 
-function getSteamAppId(indieUrl, price, name, currentWait, callback) {
+function getSteamAppId(indieUrl, price, name, currentWait, callback) {   
     $.ajax({
         url: indieUrl,
         type: "GET",
     })
         .done(function (data) {
+            data = $('.ticket-info-cont', data).html();
             var steamId = data.substr(data.search("http://store.steampowered.com/app/") + 34, 20).replace(/[^0-9]/g, '');
             callback(indieUrl, price, name, currentWait, steamId);
         })
