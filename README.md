@@ -39,7 +39,7 @@ Any additional edits and improvements are welcomed.
 
 ### Changelog
 
-You can find the changelog in the latest changelog in the [release tab](https://github.com/petrvecera/indiegala-giveaways/releases)
+You can find the latest changelog in the [release tab](https://github.com/petrvecera/indiegala-giveaways/releases)
 
 **0.5.3**
 - Fix the Indie coins selector for the new design
