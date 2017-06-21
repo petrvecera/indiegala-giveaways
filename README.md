@@ -1,3 +1,4 @@
+# --- SCRIPT NO LONGER WORKS - CAPTCHA IN PLACE ---
 # IndieGala Giveaways - Auto-join user script
 User script to auto-join giveaways on indiegala.com
 
